@@ -2,6 +2,7 @@ var resource = {
 	allNum: 0,
 	userId: "327b4305c23342939b0659fa10ac3eab",
 	dataObj: {
+		factoryList: '',
 		attentionFlag: 0,
 		type: 1,
 		species: "",
@@ -120,7 +121,9 @@ var resource = {
 			data: dataObj,
 			success: function(data) {
 				// console.log(data)
-				$('.myFollows').html('我关注的(' + data[0].count + ')');
+//				$('.myFollows').html('我关注的(' + data[0].count + ')');
+				$('.myFollows a').text(data[0].count);
+				
 			},
 			fail: function(err) {
 				console.log(err)
@@ -213,7 +216,9 @@ var resource = {
 			success: function(data) {
 				// console.log(data[0])
 				console.log(data)
-				$('.myFollows').html('我关注的(' + data[0].count + ')');
+//				$('.myFollows').html('我关注的(' + data[0].count + ')');
+				$('.myFollows a').text(data[0].count);
+				
 			},
 			fail: function(err) {
 				console.log(err)
@@ -569,7 +574,7 @@ $(function() {
 	//搜索功能
 	$("#search").click(function() {
 		resource.dataObj.species = $("#species").val()
-		resource.dataObj.factory = $("#factory").val()
+		resource.dataObj.factoryList = $("#factory").val()
 		resource.dataObj.companyName = $("#company").val()
 		if(resource.dataObj.type == 1) {
 			resource.dataObj.type = 1
@@ -613,6 +618,7 @@ $(function() {
 			'buttons': {
 				'确定': function() {
 					resource.unfollow()
+					
 					M.dialog3.close();
 				},
 				'取消': function() {
@@ -686,8 +692,8 @@ $(function() {
 					obj.text("关注").removeClass("cancelFollow").addClass("follow");
 					alert(data[0].message);
 					var count = 0;
-					count = $('.myFollows span').html();
-					console.log($('.myFollows span'))
+					count = $('.myFollows a').html();
+					console.log($('.myFollows a'))
 					count--;
 					console.log('count', count)
 				} else {
@@ -754,6 +760,9 @@ $(function() {
 									if(data[0].ret == 0) {
 										obj.text("取消关注").removeClass("follow").addClass("cancelFollow");
 										alert(data[0].message);
+										var count = $('.myFollows a').text();
+										count ++;
+										$('.myFollows a').text(count);
 									} else {
 										alert(data[0].message);
 									}

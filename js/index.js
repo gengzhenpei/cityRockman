@@ -53,6 +53,10 @@ var home = {
 		var dataArr = []; //y轴数据 所有钢铁类的平均值
 		var timeArr = []; //x轴数据 时间
 		var splist = [];
+		//数字转化为两位小数
+		function fomatFloat(src, pos) {
+			return Math.round(src * Math.pow(10, pos)) / Math.pow(10, pos);
+		}
 		//首页废铁Ajax
 		function scrap() {
 			$.ajax({
@@ -80,42 +84,64 @@ var home = {
 							});
 							gangTieAvg = gangTieAvg / len;
 						}
+						gangTieAvg = fomatFloat(gangTieAvg, 2);
 						arr.unshift(gangTieAvg);
 
 					});
 					//提取城市矿山指数下数据
-					var count = arr[0];
-					arr.forEach(function(item, index) {
-						if(index > 0) {
-							if(item.length > 0) {
-								item.forEach(function(item2) {
-									count.forEach(function(countItem, index2) {
-										if(item2.speciesId === countItem.speciesId) {
-											count[index2].avg = countItem.avg + item2.avg;
-										}
-									});
-									if(count.filter(function(countItem) {
-											return countItem.speciesId === item2.speciesId
-										}).length === 0) {
-										count.push(item2);
-									}
-								});
-							}
-						}
-
-					});
+					//					var count = arr[0];
+					//					arr.forEach(function(item, index) {
+					//						if(index > 0) {
+					//							if(item.length > 0) {
+					//								item.forEach(function(item2) {
+					//									count.forEach(function(countItem, index2) {
+					//										if(item2.speciesId === countItem.speciesId) {
+					//											count[index2].avg = countItem.avg + item2.avg;
+					//										}
+					//									});
+					//									if(count.filter(function(countItem) {
+					//											return countItem.speciesId === item2.speciesId
+					//										}).length === 0) {
+					//										count.push(item2);
+					//									}
+					//								});
+					//							}
+					//						}
+					//
+					//					});
 					$swiper_slide = $('<div class="swiper-slide swiper-pad"><div>' +
 						'<p class="main_title">天津地区 废钢铁</p>' +
 						'</div></div>');
 					$main_pic_list = $('<div class="main_pic_list pad-top-36"></div>');
-
+//					console.log('splist[0]', splist[0]);
+					splist[0] = [{
+							avg: 1950,
+							speciesName: '重型废钢'
+						},
+						{
+							avg: 1760,
+							speciesName: '中型废钢'
+						},
+						{
+							avg: 1500,
+							speciesName: '统料废钢'
+						},
+						{
+							avg: 1450,
+							speciesName: '小型废钢'
+						},
+						{
+							avg: 1150,
+							speciesName: '薄型废钢'
+						}
+					]
 					$(splist[0]).each(function() {
 						//						this.avg = this.avg.toFixed(2);
 						$main_list_flex = $('' +
 							'<div class="main_list_flex">' +
 							'<p class="main_list_money">' +
-							'<span class="main_list_red">' + this.avg.toFixed(2) + '</span>' +
-							'<span>元</span>' +
+							'<span class="main_list_red">' + parseInt(this.avg) + '</span>' +
+							'<span>&nbsp元</span>' +
 							'</p>'
 							// +'<p class="main_list_num">'
 							// +'<span>'
@@ -166,7 +192,7 @@ var home = {
 					// type: 'spline'
 				},
 				title: {
-					text: '废钢铁指数',
+					text: '废钢铁指数（元/吨）',
 					align: 'left',
 					style: {
 						fontSize: '17px'
@@ -176,7 +202,7 @@ var home = {
 				xAxis: {
 					type: 'datetime',
 					labels: {
-						format: '{value: %m / %d }',
+						format: '{value: %m 月 }',
 						align: 'center',
 						rotation: 0
 					}
@@ -214,11 +240,11 @@ var home = {
 					borderWidth: 0
 				},
 				series: [{
-					name: '<b style="color:#333333;font-weight:100;font-size:15px">钢铁</b>',
+					name: '<b style="color:#333333;font-weight:100;font-size:15px">废钢铁</b>',
 
 					data: dataArr,
 					pointStart: Date.UTC(2017, (timeArr[timeArr.length - 1] - 1), 1),
-					pointInterval: 30 * 24 * 3600 * 1000
+					pointInterval: 31 * 24 * 3600 * 1000
 				}, ],
 				navigation: {
 					menuItemStyle: {
@@ -236,7 +262,7 @@ var home = {
 				// type: 'spline'
 			},
 			title: {
-				text: '废纸指数',
+				text: '废纸指数（元/吨）',
 				align: 'left',
 				style: {
 					fontSize: '17px'
@@ -246,7 +272,7 @@ var home = {
 			xAxis: {
 				type: 'datetime',
 				labels: {
-					format: '{value: %m / %d }',
+					format: '{value: %m 月 }',
 					align: 'center',
 					rotation: 0
 				}
@@ -282,11 +308,11 @@ var home = {
 				borderWidth: 0
 			},
 			series: [{
-				name: '<b style="color:#333333;font-weight:100;font-size:15px">纸</b>',
+				name: '<b style="color:#333333;font-weight:100;font-size:15px">废纸</b>',
 
-				data: [0.9, 0.6, 3.5, 8.4, 13.5, 17.0],
-				pointStart: Date.UTC(2017, 2, 1),
-				pointInterval: 30 * 24 * 3600 * 1000
+				data: [2190, 2100, 2180, 2130, 2110, 2190],
+				pointStart: Date.UTC(2017, 3, 1),
+				pointInterval: 31 * 24 * 3600 * 1000
 			}, ],
 			navigation: {
 				menuItemStyle: {
@@ -308,43 +334,47 @@ var home = {
 				dataType: 'json',
 				success: function(res) {
 					var result = res[0].content;
+					var nowMonth = res[0].content[0].monthTime.slice(6);
 					var resultArr = [];
 					var price = 0;
-					
-					$.each(result[0].speciesList, function(index, value){
+					$.each(result[2].speciesList, function(index, value) {
 						xAxisLable.push(value.species);
 						$.each(value.sizeList, function(i, v) {
-							
+
 							price += v.price;
 						});
-						dataArr.push(price/value.sizeList.length);
+						dataArr.push(price / value.sizeList.length);
 					})
-					
-					if(dataArr.length==0){
-						dataArr = [0,0];
-						xAxisLable = [0,0];
+
+					if(dataArr.length == 0) {
+						dataArr = [0, 0];
+						xAxisLable = [0, 0];
+						nowMonth = 9;
 					}
 
-
-					applianceHighchartFn(xAxisLable, dataArr)
+					applianceHighchartFn(xAxisLable, dataArr, nowMonth)
 				}
 
 			})
 		}
 		appliance();
 
-		function applianceHighchartFn(xAxisLable, dataArr) {
+		function applianceHighchartFn(xAxisLable, dataArr, month) {
 			$('#appliance').highcharts({
 				chart: {
 					type: 'column'
 				},
 				title: {
-					text: '废家电指数',
+					text: '废家电指数（元/台）',
 					align: 'left',
 					style: {
 						fontSize: '17px'
 					},
 					y: 6
+				},
+				subtitle: {
+					text: month + '月份数据',
+					align: 'right'
 				},
 				xAxis: {
 					type: 'categories',
@@ -367,8 +397,6 @@ var home = {
 						marker: {
 							enabled: false
 						}
-						// pointInterval: 10 * 24 * 3600 * 1000, // one hour
-						// pointStart: Date.UTC(2017, 0, 0, 0, 0, 0)
 					}
 				},
 				credits: {
@@ -384,9 +412,8 @@ var home = {
 				},
 				series: [{
 					name: '<b style="color:#333333;font-weight:100;font-size:15px">家电</b>',
-
-					data: dataArr
-				}, ],
+					data: dataArr,
+				}],
 				navigation: {
 					menuItemStyle: {
 						fontSize: '10px'
@@ -414,7 +441,7 @@ var home = {
 							'<span class="main_pro_name">' +
 							data[i].speciesName +
 							'</span>' +
-							'<span class="main_pro_type">钢铁2</span>' +
+							'<span class="main_pro_type">钢材</span>' +
 							'<span class="main_pro_num">' +
 							data[i].price +
 							'</span>' +
@@ -452,7 +479,7 @@ var home = {
 					'昨日成交' +
 					'</p>' +
 					'<p class="main_result_parent">' +
-					'<span class="main_result_num" id="yesterdayDan">' + data.yesterdayDan + '</span>' +
+					'<span class="main_result_num" id="yesterdayDan">' + 460 + '</span>' +
 					'<span class="main_result_dan">单</span>' +
 					'</p>' +
 					'</div>');
@@ -464,11 +491,11 @@ var home = {
 					'钢铁' +
 					'</span>' +
 					'<span class="main_result_zuo">' +
-					'昨日成交' +
+					'成交量' +
 					'</span>' +
 					'</p>' +
 					'<p class="main_result_parent">' +
-					'<span class="main_result_num1" id="totalSteel">' + data.totalSteel + '</span>' +
+					'<span class="main_result_num1" id="totalSteel">' + 3848 + '</span>' +
 					'<span class="main_result_dan">吨</span>' +
 					'</p>' +
 					'<div class="Bord3"></div>' +
@@ -479,7 +506,7 @@ var home = {
 					'纸' +
 					'</span>' +
 					'<span class="main_result_zuo">' +
-					'昨日成交' +
+					'成交量' +
 					'</span>' +
 					'</p>' +
 					'<p class="main_result_parent">' +
@@ -509,12 +536,12 @@ var home = {
 				$("body").removeClass("hao-loading");
 				var data = res[0].content;
 				var dataArr = [];
-				dataArr = data[0].speciesList;
+				dataArr = data[2].speciesList;
 				if(dataArr.length == 0) {
 					$('#swiper-container4').empty().append('<img class="nodata_img" src="images/nodata.jpg"/>');
 					return;
 				} else {
-				
+
 					$swiper_slide = $('<div class="swiper-slide swiper-pad"><div>' +
 						'<p class="main_title">天津地区 废家电</p>' +
 						'</div></div>')
@@ -557,13 +584,14 @@ var home = {
 
 						//添加div中数据
 						$(this.sizeList).each(function(index) {
+
 							$str1 = $('<p class="flex_type">' +
 								'<span class="flex_chicun">' +
 								this.size +
 								'</span>' +
 								'<span class="flex_num">' +
-								this.price +
-								'元/台</span>' +
+								this.price.toFixed(2) +
+								'&nbsp元/台</span>' +
 								'</p>');
 							$divBtn1_con.append($str1);
 							if(index < 2) {
@@ -572,8 +600,8 @@ var home = {
 									this.size +
 									'</span>' +
 									'<span class="flex_num">' +
-									this.price +
-									'元/台</span>' +
+									this.price.toFixed(2) +
+									'&nbsp元/台</span>' +
 									'</p>');
 
 								$flex_item.append($flex_item_content)
